@@ -71,17 +71,44 @@ tbody tr:hover { background: rgba(255,255,255,0.04); }
 .badge-neutral { background: #EDEAE0; color: var(--slate); }
 
 .btn-primary {
-  background: var(--navy-deep); color: var(--cream); border: none; padding: 11px 22px;
-  font-weight: 600; font-size: 13.5px; border-radius: 3px; cursor: pointer; border-bottom: 3px solid var(--gold);
+  background: linear-gradient(90deg, #FF7A59 0%, #FFB86B 100%);
+  color: #061121; border: none; padding: 11px 22px;
+  font-weight: 700; font-size: 14px; border-radius: 8px; cursor: pointer;
+  box-shadow: 0 6px 18px rgba(255,139,78,0.18);
+  border-bottom: 3px solid rgba(0,0,0,0.18);
+  transition: transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease;
 }
-.btn-primary:hover { background: var(--navy); }
-.btn-primary:disabled { opacity: 0.5; cursor: default; }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(255,139,78,0.22); }
+.btn-primary:active { transform: translateY(0); }
+.btn-primary:disabled { opacity: 0.6; cursor: default; }
 .btn-ghost {
-  background: transparent; color: var(--navy); border: 1px solid var(--line); padding: 7px 12px;
-  font-size: 12px; border-radius: 3px; cursor: pointer;
+  background: transparent; color: var(--cream); border: 1px solid rgba(255,186,107,0.12); padding: 8px 14px;
+  font-size: 13px; border-radius: 6px; cursor: pointer; transition: background 120ms ease, border-color 120ms ease;
 }
-.btn-ghost:hover { border-color: var(--navy); }
-.btn-danger { color: var(--err); }
+.btn-ghost:hover { background: rgba(255,186,107,0.06); border-color: rgba(255,186,107,0.22); color: var(--cream); }
+.btn-danger {
+  background: linear-gradient(90deg,#E0523B 0%, #C63A2F 100%);
+  color: #fff; padding: 8px 12px; border-radius: 6px; font-weight: 600; border: none;
+  box-shadow: 0 6px 16px rgba(198,58,47,0.16);
+}
 
 .form-card { background: var(--panel); border: 1px solid var(--line); border-top: 3px solid var(--gold); border-radius: 3px; padding: 22px 24px; margin-bottom: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
 .empty-state { text-align: center; padding: 40px 20px; color: var(--slate); font-size: 13.5px; font-style: italic; background: var(--panel); border: 1px dashed var(--line); border-radius: 3px; }
+
+/* Header nav tab styles */
+.nav-tab {
+  background: transparent;
+  border: none;
+  color: rgba(233,238,247,0.7);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 12px 18px;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  border-radius: 6px;
+  transition: color 120ms ease, border-color 120ms ease, transform 120ms ease;
+}
+.nav-tab:hover { color: var(--cream); transform: translateY(-2px); }
+.nav-tab.active { color: var(--cream); border-bottom-color: var(--gold); }

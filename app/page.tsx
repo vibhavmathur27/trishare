@@ -30,20 +30,12 @@ export default function Home() {
         <p style={{ margin: '0 0 22px', color: 'rgba(244,240,230,0.7)', fontSize: 13.5, maxWidth: 680, lineHeight: 1.5 }}>
           Compare AI takes on a role, then log every email, call, and application in one place — including which resume version went where.
         </p>
-        <nav style={{ display: 'flex', gap: 2 }}>
+        <nav style={{ display: 'flex', gap: 8 }}>
           {TABS.map(t => (
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              className="font-mono"
-              style={{
-                background: 'transparent', border: 'none',
-                color: tab === t.id ? 'var(--cream)' : 'rgba(244,240,230,0.55)',
-                fontSize: 12.5, letterSpacing: '0.06em', textTransform: 'uppercase',
-                padding: '12px 20px', cursor: 'pointer',
-                borderBottom: tab === t.id ? '3px solid var(--gold)' : '3px solid transparent',
-                transform: 'translateY(3px)'
-              }}
+              className={`nav-tab ${tab === t.id ? 'active' : ''}`}
             >
               {t.label}
             </button>
