@@ -22,6 +22,7 @@ export default function CompareTab() {
   const [status, setStatus] = useState('');
   const [results, setResults] = useState<Record<string, Result>>({});
   const [synthesis, setSynthesis] = useState('');
+  const [selectedPoints, setSelectedPoints] = useState<string[]>([]);
   const [resumeFileName, setResumeFileName] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -31,31 +32,37 @@ export default function CompareTab() {
     return 'Rules for the comparison';
   }, [mode]);
 
-  async function handleResumeUpload(file: File | null) {
-    if (!file) return;
-    setResumeFileName(file.name);
-    setStatus(`Extracting text from ${file.name}...`);
+  async function extractResumeText(file: File | null) {
+    if (!file) return '';
     const fd = new FormData();
     fd.append('resume', file);
     try {
       const res = await fetch('/api/compare/resume-text', { method: 'POST', body: fd });
       const data = await res.json();
-      if (data.text && data.text.trim()) {
-        setProfile(data.text.slice(0, 12000));
-        setStatus(`Loaded resume text from ${file.name}.`);
-      } else {
-        setProfile(`Resume file uploaded: ${file.name}`);
-        setStatus(data.error || `Uploaded ${file.name}. You can still paste a summary if you want a richer comparison.`);
-      }
-    } catch (e: any) {
+      return data.text || '';
+    } catch {
+      return '';
+    }
+  }
+
+  async function handleResumeUpload(file: File | null) {
+    if (!file) return;
+    setResumeFileName(file.name);
+    setStatus(`Extracting text from ${file.name}...`);
+    const text = await extractResumeText(file);
+    if (text && text.trim()) {
+      setProfile(text.slice(0, 12000));
+      setStatus(`Loaded resume text from ${file.name}.`);
+    } else {
       setProfile(`Resume file uploaded: ${file.name}`);
-      setStatus('Could not extract resume text automatically.');
+      setStatus(`Uploaded ${file.name}. You can still paste a summary if you want a richer comparison.`);
     }
   }
 
   function downloadDraft(format: 'doc' | 'pdf') {
     if (!synthesis) return;
-    const blob = format === 'pdf' ? new Blob([buildPdf(synthesis)], { type: 'application/pdf' }) : new Blob([synthesis], { type: 'application/msword' });
+    const content = mode === 'resume' && selectedPoints.length > 0 ? `${synthesis}\n\nSelected resume points:\n${selectedPoints.join('\n')}` : synthesis;
+    const blob = format === 'pdf' ? new Blob([buildPdf(content)], { type: 'application/pdf' }) : new Blob([content], { type: 'application/msword' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
@@ -84,7 +91,10 @@ export default function CompareTab() {
     setStatus('Querying Claude, ChatGPT, and Gemini in parallel...');
     setSynthesis('');
 
-    const payload = { jobDescription: jd, profile, question, taskType: mode, instructions };
+    const selectedFile = fileRef.current?.files?.[0] || null;
+    const extractedProfile = selectedFile ? await extractResumeText(selectedFile) : '';
+    const effectiveProfile = (extractedProfile && extractedProfile.trim()) || profile.trim();
+    const payload = { jobDescription: jd, profile: effectiveProfile, question, taskType: mode, instructions };
     try {
       const [claudeRes, chatgptRes, geminiRes] = await Promise.all([
         fetch('/api/compare/claude', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(payload) }).then(r => r.json()),
@@ -166,7 +176,24 @@ export default function CompareTab() {
           <div className="font-mono" style={{ fontSize: 11, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--gold-soft)', marginBottom: 10, borderBottom: '1px solid rgba(228,206,153,0.25)', paddingBottom: 10 }}>
             Best draft from all 3
           </div>
-          <div className="font-display" style={{ fontSize: 16.5, lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>{synthesis}</div>
+          <div className="font-display" style={{ fontSize: 16.5, lineHeight: 1.6, whiteSpace: 'pre-wrap', color: 'var(--cream)' }}>{synthesis}</div>
+          {mode === 'resume' && (
+            <div style={{ marginTop: 16 }}>
+              <div className="font-mono" style={{ fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--gold-soft)', marginBottom: 8 }}>Pick points for the final resume</div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                {synthesis.split('\n').filter(Boolean).slice(0, 8).map((point, index) => {
+                  const value = point.replace(/^[-*]\s*/, '').trim();
+                  if (!value) return null;
+                  return (
+                    <label key={`${value}-${index}`} style={{ background: 'rgba(255,255,255,0.1)', padding: '8px 10px', borderRadius: 999, cursor: 'pointer', fontSize: 12.5 }}>
+                      <input type="checkbox" checked={selectedPoints.includes(value)} onChange={() => setSelectedPoints(prev => prev.includes(value) ? prev.filter(item => item !== value) : [...prev, value])} style={{ marginRight: 6 }} />
+                      {value}
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+          )}
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 16 }}>
             <button className="btn-ghost" onClick={() => downloadDraft('doc')}>Download .doc</button>
             <button className="btn-ghost" onClick={() => downloadDraft('pdf')}>Download .pdf</button>

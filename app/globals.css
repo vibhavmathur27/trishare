@@ -1,26 +1,29 @@
 @import "tailwindcss";
 
 :root {
-  --navy-deep: #0B1B32;
-  --navy: #14294F;
-  --gold: #C9A24B;
-  --gold-soft: #E4CE99;
-  --cream: #F4F0E6;
-  --ink: #182238;
-  --slate: #5C6B85;
-  --line: rgba(20, 41, 79, 0.12);
-  --ok: #2F6B4F;
-  --ok-bg: #E7F1EC;
-  --err: #8C3A2B;
-  --err-bg: #F5E9E5;
-  --warn: #96631E;
-  --warn-bg: #F8EFDD;
+  --navy-deep: #0F172A;
+  --navy: #18263E;
+  --gold: #A88B5C;
+  --gold-soft: #D9C8A1;
+  --cream: #F3F0E8;
+  --ink: #E9EEF7;
+  --slate: #9FAEC3;
+  --line: rgba(217, 200, 161, 0.16);
+  --ok: #67A88A;
+  --ok-bg: #163127;
+  --err: #C77A67;
+  --err-bg: #2D1B1A;
+  --warn: #D4A84E;
+  --warn-bg: #2B2414;
+  --panel: #121B2D;
+  --panel-soft: #17243B;
 }
 
 html, body {
-  background: var(--cream);
+  background: linear-gradient(135deg, #0A1120 0%, #111C2E 100%);
   color: var(--ink);
   font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+  min-height: 100%;
 }
 
 .font-display { font-family: 'Fraunces', serif; }
@@ -28,11 +31,15 @@ html, body {
 
 input, textarea, select {
   border: 1px solid var(--line);
-  background: #fff;
+  background: var(--panel-soft);
+  color: var(--ink);
   border-radius: 3px;
   padding: 10px 12px;
   font-size: 13.5px;
   width: 100%;
+}
+input::placeholder, textarea::placeholder {
+  color: var(--slate);
 }
 input:focus, textarea:focus, select:focus {
   outline: 2px solid var(--gold);
@@ -48,14 +55,14 @@ label {
   margin-bottom: 6px;
 }
 
-table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid var(--line); border-radius: 3px; overflow: hidden; }
+table { width: 100%; border-collapse: collapse; background: var(--panel); border: 1px solid var(--line); border-radius: 3px; overflow: hidden; }
 thead th {
   text-align: left; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.06em;
-  text-transform: uppercase; color: var(--slate); padding: 10px 14px; border-bottom: 1px solid var(--line); background: #FBF9F4;
+  text-transform: uppercase; color: var(--slate); padding: 10px 14px; border-bottom: 1px solid var(--line); background: var(--panel-soft);
 }
-tbody td { padding: 12px 14px; font-size: 13.5px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tbody td { padding: 12px 14px; font-size: 13.5px; border-bottom: 1px solid var(--line); vertical-align: top; color: var(--ink); }
 tbody tr:last-child td { border-bottom: none; }
-tbody tr:hover { background: #FBF9F4; }
+tbody tr:hover { background: rgba(255,255,255,0.04); }
 
 .badge { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.05em; text-transform: uppercase; padding: 3px 9px; border-radius: 20px; }
 .badge-ok { background: var(--ok-bg); color: var(--ok); }
@@ -76,5 +83,5 @@ tbody tr:hover { background: #FBF9F4; }
 .btn-ghost:hover { border-color: var(--navy); }
 .btn-danger { color: var(--err); }
 
-.form-card { background: #fff; border: 1px solid var(--line); border-top: 3px solid var(--navy); border-radius: 3px; padding: 22px 24px; margin-bottom: 28px; }
-.empty-state { text-align: center; padding: 40px 20px; color: var(--slate); font-size: 13.5px; font-style: italic; background: #fff; border: 1px dashed var(--line); border-radius: 3px; }
+.form-card { background: var(--panel); border: 1px solid var(--line); border-top: 3px solid var(--gold); border-radius: 3px; padding: 22px 24px; margin-bottom: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+.empty-state { text-align: center; padding: 40px 20px; color: var(--slate); font-size: 13.5px; font-style: italic; background: var(--panel); border: 1px dashed var(--line); border-radius: 3px; }

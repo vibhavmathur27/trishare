@@ -16,23 +16,29 @@ export async function POST(req: NextRequest) {
   }
 
   const combined = validResults.map((r: any) => `--- ${r.source} ---\n${r.text}`).join('\n\n');
-  const prompt = taskType === 'email'
-    ? `Three different AI models each drafted an outreach email. Here are their responses:
-
-${combined}
-
-Synthesize them into one polished final email. Keep the best subject line and body from the three drafts, remove repetition, and make it sound confident, concise, and professional. Return the output with a clear Subject: line and body.`
-    : taskType === 'resume'
-      ? `Three different AI models each drafted a résumé summary and bullet points for the same role. Here are their responses:
-
-${combined}
-
-Synthesize them into one polished résumé draft. Keep the strongest summary and the best bullet points, and make it feel tailored to the target role. Return a concise summary plus a short list of high-impact bullet points.`
-      : `Three different AI models were each independently asked to assess a candidate's fit for a job. Here are their three independent responses:
+  let prompt = `Three different AI models were each independently asked to assess a candidate's fit for a job. Here are their three independent responses:
 
 ${combined}
 
 Synthesize these into a single, clear verdict for the candidate. Note where the three models agreed (that's the highest-confidence signal), where they disagreed, and give one concrete recommendation: apply as-is, apply with a specific framing change, or skip and why. Keep it under 250 words.`;
+
+  if (taskType === 'email') {
+    prompt = `Three different AI models each drafted an outreach email. Here are their responses:
+
+${combined}
+
+Synthesize them into one polished final email from the candidate to the recruiter or hiring contact. Keep the strongest subject line and body, remove repetition, and make it sound natural, confident, and concise. Avoid AI-like phrasing, buzzwords, and filler. Return the output with a clear Subject: line and body.`;
+  } else if (taskType === 'resume') {
+    prompt = `Three different AI models each reviewed the same resume against the same job description. Here are their responses:
+
+${combined}
+
+Synthesize them into one recruiter-grade resume improvement plan. Keep the best missing keywords, preserve the candidate's original experience, and combine the strongest rewrite suggestions into one practical final version. Avoid AI-like wording, filler, and buzzwords. Return:
+1. Missing keywords or phrases from the JD
+2. Resume points that should stay as-is
+3. A stronger rewritten summary
+4. A short list of improved bullets that preserve the original meaning`;
+  }
 
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
