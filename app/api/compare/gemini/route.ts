@@ -6,11 +6,11 @@ export const dynamic = 'force-dynamic';
 const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
 
 export async function POST(req: NextRequest) {
-  const { jobDescription, profile, question } = await req.json();
+  const { jobDescription, profile, question, taskType, instructions } = await req.json();
   const key = process.env.GEMINI_API_KEY;
   if (!key) return NextResponse.json({ source: 'Gemini', error: 'No GEMINI_API_KEY set' });
 
-  const prompt = buildFitPrompt(jobDescription, profile, question);
+  const prompt = buildFitPrompt(jobDescription, profile, question, taskType, instructions);
   try {
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${key}`;
     const res = await fetch(url, {

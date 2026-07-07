@@ -6,11 +6,11 @@ export const dynamic = 'force-dynamic';
 const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-4.1';
 
 export async function POST(req: NextRequest) {
-  const { jobDescription, profile, question } = await req.json();
+  const { jobDescription, profile, question, taskType, instructions } = await req.json();
   const key = process.env.OPENAI_API_KEY;
   if (!key) return NextResponse.json({ source: 'ChatGPT', error: 'No OPENAI_API_KEY set' });
 
-  const prompt = buildFitPrompt(jobDescription, profile, question);
+  const prompt = buildFitPrompt(jobDescription, profile, question, taskType, instructions);
   try {
     const res = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',

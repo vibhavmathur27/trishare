@@ -6,11 +6,11 @@ export const dynamic = 'force-dynamic';
 const CLAUDE_MODEL = process.env.CLAUDE_MODEL || 'claude-sonnet-5';
 
 export async function POST(req: NextRequest) {
-  const { jobDescription, profile, question } = await req.json();
+  const { jobDescription, profile, question, taskType, instructions } = await req.json();
   const key = process.env.ANTHROPIC_API_KEY;
   if (!key) return NextResponse.json({ source: 'Claude', error: 'No ANTHROPIC_API_KEY set' });
 
-  const prompt = buildFitPrompt(jobDescription, profile, question);
+  const prompt = buildFitPrompt(jobDescription, profile, question, taskType, instructions);
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',

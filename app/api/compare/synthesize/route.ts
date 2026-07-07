@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic';
 const CLAUDE_MODEL = process.env.CLAUDE_MODEL || 'claude-sonnet-5';
 
 export async function POST(req: NextRequest) {
-  const { results } = await req.json();
+  const { results, taskType } = await req.json();
   const key = process.env.ANTHROPIC_API_KEY;
 
   const validResults = (results || []).filter((r: any) => r.text);
@@ -16,7 +16,19 @@ export async function POST(req: NextRequest) {
   }
 
   const combined = validResults.map((r: any) => `--- ${r.source} ---\n${r.text}`).join('\n\n');
-  const prompt = `Three different AI models were each independently asked to assess a candidate's fit for a job. Here are their three independent responses:
+  const prompt = taskType === 'email'
+    ? `Three different AI models each drafted an outreach email. Here are their responses:
+
+${combined}
+
+Synthesize them into one polished final email. Keep the best subject line and body from the three drafts, remove repetition, and make it sound confident, concise, and professional. Return the output with a clear Subject: line and body.`
+    : taskType === 'resume'
+      ? `Three different AI models each drafted a résumé summary and bullet points for the same role. Here are their responses:
+
+${combined}
+
+Synthesize them into one polished résumé draft. Keep the strongest summary and the best bullet points, and make it feel tailored to the target role. Return a concise summary plus a short list of high-impact bullet points.`
+      : `Three different AI models were each independently asked to assess a candidate's fit for a job. Here are their three independent responses:
 
 ${combined}
 

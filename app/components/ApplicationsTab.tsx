@@ -51,12 +51,12 @@ export default function ApplicationsTab() {
 
   return (
     <div>
-      <h2 className="font-display" style={{ fontSize: 22, fontWeight: 600, margin: '0 0 4px' }}>Application tracker</h2>
+      <h2 className="font-display" style={{ fontSize: 22, fontWeight: 600, margin: '0 0 4px' }}>Application log</h2>
       <p style={{ color: 'var(--slate)', fontSize: 13.5, margin: '0 0 22px' }}>
-        One row per application, with the exact resume version you submitted attached.
+        Track every application, the version of the resume you used, and where it stands in the process.
       </p>
 
-      <div className="form-card">
+      <div className="form-card" style={{ background: 'linear-gradient(135deg, #ffffff 0%, #fcfaf4 100%)' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
           <div><label>Company</label><input value={form.company} onChange={e => setForm({ ...form, company: e.target.value })} /></div>
           <div><label>Role</label><input value={form.role} onChange={e => setForm({ ...form, role: e.target.value })} /></div>
@@ -85,7 +85,7 @@ export default function ApplicationsTab() {
           <tbody>
             {rows.map(r => (
               <tr key={r.id}>
-                <td>{r.company}<br /><span style={{ color: 'var(--slate)', fontSize: 12 }}>{r.role}</span></td>
+                <td>{r.company}<br /><span style={{ color: 'var(--slate)', fontSize: 12 }}>{r.role}</span><br /><span style={{ color: 'var(--slate)', fontSize: 12 }}>{r.notes || 'No notes'}</span></td>
                 <td>{r.source}</td>
                 <td>{r.dateApplied.slice(0, 10)}</td>
                 <td style={{ maxWidth: 260, color: 'var(--slate)', fontSize: 12.5 }}>

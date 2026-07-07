@@ -39,12 +39,12 @@ export default function CallsTab() {
 
   return (
     <div>
-      <h2 className="font-display" style={{ fontSize: 22, fontWeight: 600, margin: '0 0 4px' }}>Call tracker</h2>
+      <h2 className="font-display" style={{ fontSize: 22, fontWeight: 600, margin: '0 0 4px' }}>Call follow-up hub</h2>
       <p style={{ color: 'var(--slate)', fontSize: 13.5, margin: '0 0 22px' }}>
-        Phone numbers, outcomes, and follow-up dates in one place.
+        Keep the conversation moving with a clear log of calls, outcomes, and reminders.
       </p>
 
-      <div className="form-card">
+      <div className="form-card" style={{ background: 'linear-gradient(135deg, #ffffff 0%, #fcfaf4 100%)' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14, marginBottom: 14 }}>
           <div><label>Name</label><input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} /></div>
           <div><label>Company</label><input value={form.company} onChange={e => setForm({ ...form, company: e.target.value })} /></div>
@@ -64,14 +64,14 @@ export default function CallsTab() {
         <div className="empty-state">No calls logged yet.</div>
       ) : (
         <table>
-          <thead><tr><th>Name</th><th>Company / Role</th><th>Phone</th><th>Called</th><th>Outcome</th><th>Follow-up</th><th>Actions</th></tr></thead>
+          <thead><tr><th>Person</th><th>Company / Role</th><th>Phone</th><th>Called</th><th>Outcome</th><th>Follow-up</th><th>Actions</th></tr></thead>
           <tbody>
             {rows.map(r => {
               const due = r.nextFollowUp && new Date(r.nextFollowUp) <= new Date();
               const badgeClass = r.outcome === 'connected' ? 'badge-ok' : r.outcome === 'no_answer' ? 'badge-err' : 'badge-neutral';
               return (
                 <tr key={r.id}>
-                  <td>{r.name}</td>
+                  <td>{r.name}<br /><span style={{ color: 'var(--slate)', fontSize: 12 }}>{r.notes || 'No notes'}</span></td>
                   <td>{r.company}{r.role ? ` — ${r.role}` : ''}</td>
                   <td>{r.phone}</td>
                   <td>{r.dateCalled.slice(0, 10)}</td>

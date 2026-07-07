@@ -10,7 +10,7 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const { name, company, role, email, subject, dateSent, notes } = body;
+  const { name, company, role, email, subject, dateSent, notes, draft } = body;
   if (!name || !email) {
     return NextResponse.json({ error: 'name and email are required' }, { status: 400 });
   }
@@ -23,6 +23,7 @@ export async function POST(req: NextRequest) {
       subject: subject || '',
       dateSent: dateSent ? new Date(dateSent) : new Date(),
       notes: notes || '',
+      draft: draft || '',
       status: 'sent'
     }
   });
